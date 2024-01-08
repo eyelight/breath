@@ -27,10 +27,10 @@ bouncy := breath.Conf{
 
 relaxy := breath.Conf{
 	Pattern:   breath.Gaussian, // which wave to use
-	Smoothing: 1250, // number of steps in wave
+	Smoothing: 1024, // number of steps in wave
 	Delay:     1 * time.Millisecond, // duration per step
 	Beta:      0.5, // boring input to the gaussian function
-	Gamma:     0.15, // exciting input to the gaussian function
+	Gamma:     0.21, // exciting input to the gaussian function
 }
 
 hold := breath.Conf{
