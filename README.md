@@ -72,5 +72,7 @@ led.Breathe(relaxy)
 If you ever get curious about the current `breath.Conf`, you can call `Conf`, which is the only other method in the API. `Conf` will return the currently loaded values for your breather.
 
 ```golang
-c := led.Conf()
+if led.Conf().Pattern != breath.Stop {
+	led.Breathe(stop)
+}
 ```
