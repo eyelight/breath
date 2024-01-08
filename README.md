@@ -1,5 +1,5 @@
 # breath
-let your LEDs breathe
+Let your LEDs breathe
 
 ## About
 Using TinyGo on microcontroller targets, you can use PWM to fade your LEDs. This package lets you configure different "breathing" patterns such as Triangular, Circular, and Gaussian. This package is inspired by [this blog post](https://makersportal.com/blog/2020/3/27/simple-breathing-led-in-arduino).
@@ -16,7 +16,7 @@ led := breath.New(machine.LED, p)
 ```
 At this point, your LED is not breathing, but it is ready to receive a `breath.Conf` via the `Breathe` method, which passes a `breath.Conf` to a long-lived goroutine to which you can modify behavior as the situation changes by calling Breathe again with a new `breath.Conf`. 
 
-If you want to create multiple breath configurations, you can easily pass them by name. Let's create two.
+If you want to create multiple breath configurations, you can easily pass them by name. Let's create some.
 
 ```golang
 bouncy := breath.Conf{
@@ -26,11 +26,11 @@ bouncy := breath.Conf{
 }
 
 relaxy := breath.Conf{
-	Pattern:   breath.Gaussian,
-	Smoothing: 1250,
-	Delay:     1 * time.Millisecond,
-	Beta:      0.5,
-	Gamma:     0.15,
+	Pattern:   breath.Gaussian, // which wave to use
+	Smoothing: 1250, // number of steps in wave
+	Delay:     1 * time.Millisecond, // duration per step
+	Beta:      0.5, // boring input to the gaussian function
+	Gamma:     0.15, // exciting input to the gaussian function
 }
 
 hold := breath.Conf{
@@ -54,13 +54,22 @@ You can make the breather 'hold' its breath without exiting the goroutine by pas
 led.Breathe(hold)
 ```
 
-The breather can be stopped goroutine can be stopped at any time by passing a `breath.Conf` with a `Pattern: Stop` in a subsequent call to `Breathe`. This will cause the goroutine to exit, clean itself up, and will bring the attached pin low. 
+The breather can be stopped completely by passing a `breath.Conf` with a `Pattern: Stop` in a subsequent call to `Breathe`. This will cause the goroutine to exit and will bring the attached pin low. 
+
 
 ```golang
 led.Breathe(stop)
 ```
 
-If you're ever curious about the currenty running breath.Conf, you can call `Conf`, which is the only other method in the API. Conf will return the currently running parameters for your enjoyment.
+The breather is still around even though the goroutine has stopped. To start it again, merely call `Breathe` again with a new configuration. The same breather will spawn a new goroutine, the old one having cleaned up its resources. And yes, you can change the config on the fly without holding or stopping.
+
+```golang
+led.Breathe(bouncy)
+time.Sleep(5 * time.Second)
+led.Breathe(relaxy)
+```
+
+If you ever get curious about the current `breath.Conf`, you can call `Conf`, which is the only other method in the API. `Conf` will return the currently loaded values for your breather.
 
 ```golang
 c := led.Conf()
